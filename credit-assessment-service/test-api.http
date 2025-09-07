@@ -1,0 +1,102 @@
+### Credit Assessment Service API Tests
+
+### Variables
+@baseUrl = http://localhost:3002/api/v1
+@token = your-jwt-token-here
+
+### Health Check
+GET {{baseUrl}}/../health
+
+### Login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "analyst@portobank.com",
+  "password": "analyst123"
+}
+
+### Note: User management is handled by Policy Issuance Service
+
+### Create a new credit assessment
+POST {{baseUrl}}/credit-assessments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "policyId": "123e4567-e89b-12d3-a456-426614174000",
+  "customerId": "123e4567-e89b-12d3-a456-426614174001",
+  "policyNumber": "FIA202401000001",
+  "requestedAmount": 100000.00,
+  "customerData": {
+    "name": "João Silva",
+    "cpf": "12345678901",
+    "email": "joao.silva@example.com",
+    "phone": "+5511999999999",
+    "birthDate": "1990-01-01",
+    "address": {
+      "street": "Rua das Flores",
+      "number": "123",
+      "neighborhood": "Centro",
+      "city": "São Paulo",
+      "state": "SP",
+      "zipCode": "01234-567"
+    },
+    "income": 5000,
+    "employmentStatus": "employed",
+    "employer": "Empresa ABC"
+  },
+  "financialData": {
+    "monthlyIncome": 5000,
+    "monthlyExpenses": 3000,
+    "existingDebts": 1000,
+    "creditHistory": [],
+    "bankStatements": []
+  },
+  "metadata": {
+    "collateralValue": 150000,
+    "loanPurpose": "home_purchase",
+    "additionalNotes": "First-time borrower"
+  }
+}
+
+### Get all credit assessments
+GET {{baseUrl}}/credit-assessments?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Get credit assessment by ID
+GET {{baseUrl}}/credit-assessments/assessment-uuid-here
+Authorization: Bearer {{token}}
+
+### Get credit assessment by policy ID
+GET {{baseUrl}}/credit-assessments/policy/policy-uuid-here
+Authorization: Bearer {{token}}
+
+### Process credit assessment
+POST {{baseUrl}}/credit-assessments/assessment-uuid-here/process
+Authorization: Bearer {{token}}
+
+### Get assessment logs
+GET {{baseUrl}}/credit-assessments/assessment-uuid-here/logs
+Authorization: Bearer {{token}}
+
+### Cancel assessment
+POST {{baseUrl}}/credit-assessments/assessment-uuid-here/cancel
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "reason": "Customer requested cancellation"
+}
+
+### Filter assessments by status
+GET {{baseUrl}}/credit-assessments?status=pending&page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Filter assessments by result
+GET {{baseUrl}}/credit-assessments?result=approved&page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Filter assessments by customer
+GET {{baseUrl}}/credit-assessments?customerId=customer-uuid-here&page=1&limit=10
+Authorization: Bearer {{token}}

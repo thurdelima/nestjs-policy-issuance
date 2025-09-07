@@ -1,0 +1,121 @@
+### Policy Issuance Service API Tests
+
+### Variables
+@baseUrl = http://localhost:3001/api/v1
+@token = your-jwt-token-here
+
+### Health Check
+GET {{baseUrl}}/../health
+
+### Register a new user
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "João Silva",
+  "email": "joao.silva@example.com",
+  "cpf": "12345678901",
+  "password": "password123",
+  "phone": "+5511999999999",
+  "birthDate": "1990-01-01",
+  "role": "customer",
+  "address": {
+    "street": "Rua das Flores",
+    "number": "123",
+    "complement": "Apto 45",
+    "neighborhood": "Centro",
+    "city": "São Paulo",
+    "state": "SP",
+    "zipCode": "01234-567"
+  }
+}
+
+### Login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "joao.silva@example.com",
+  "password": "password123"
+}
+
+### Get current user profile
+GET {{baseUrl}}/users/profile
+Authorization: Bearer {{token}}
+
+### Create a new policy
+POST {{baseUrl}}/policies
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "type": "fianca",
+  "customerId": "customer-uuid-here",
+  "coverageAmount": 100000.00,
+  "startDate": "2024-01-01",
+  "endDate": "2024-12-31",
+  "coverageDetails": {
+    "description": "Fiança locatícia para imóvel residencial",
+    "terms": [
+      "Cobertura por 12 meses",
+      "Franquia de R$ 500,00"
+    ],
+    "exclusions": [
+      "Danos causados por terceiros",
+      "Desgaste natural"
+    ],
+    "conditions": [
+      "Pagamento em dia",
+      "Comunicação de sinistros em até 48h"
+    ]
+  },
+  "metadata": {
+    "propertyAddress": "Rua das Flores, 123",
+    "propertyValue": 500000,
+    "additionalNotes": "Imóvel em condomínio fechado"
+  }
+}
+
+### Get all policies
+GET {{baseUrl}}/policies?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Get policy by ID
+GET {{baseUrl}}/policies/policy-uuid-here
+Authorization: Bearer {{token}}
+
+### Get policy by policy number
+GET {{baseUrl}}/policies/number/FIA202401000001
+Authorization: Bearer {{token}}
+
+### Initiate credit assessment
+POST {{baseUrl}}/policies/policy-uuid-here/credit-assessment
+Authorization: Bearer {{token}}
+
+### Process payment
+POST {{baseUrl}}/policies/policy-uuid-here/payment
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "paymentMethod": "credit_card",
+  "amount": 1200.00,
+  "transactionId": "txn_123456789"
+}
+
+### Cancel policy
+POST {{baseUrl}}/policies/policy-uuid-here/cancel
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "reason": "Customer requested cancellation"
+}
+
+### Get policy events
+GET {{baseUrl}}/policies/policy-uuid-here/events
+Authorization: Bearer {{token}}
+
+### Get my policies (for customers)
+GET {{baseUrl}}/policies/my-policies?page=1&limit=10
+Authorization: Bearer {{token}}

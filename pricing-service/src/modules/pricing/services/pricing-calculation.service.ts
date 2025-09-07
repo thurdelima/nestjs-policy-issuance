@@ -1,0 +1,161 @@
+import { Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Pricing } from '../../../entities/pricing.entity';
+import { PricingRule, RuleType, PricingType } from '../../../entities/pricing-rule.entity';
+import { RedisService } from '../../../shared/redis/redis.service';
+
+@Injectable()
+export class PricingCalculationService {
+  private readonly logger = new Logger(PricingCalculationService.name);
+
+  constructor(
+    @InjectRepository(PricingRule)
+    private pricingRuleRepository: Repository<PricingRule>,
+    private redisService: RedisService,
+  ) {}
+
+  async calculateFinalPremium(
+    pricing: Pricing,
+    metadata: Record<string, any> = {},
+  ): Promise<Pricing> {
+    try {
+      this.logger.log(`Calculating final premium for pricing ${pricing.id}`);
+
+      // Get applicable rules
+      const applicableRules = await this.getApplicableRules(pricing, metadata);
+
+      let totalDiscount = 0;
+      let totalSurcharge = 0;
+      let totalAdjustment = 0;
+
+      const appliedRules = [];
+
+      // Apply rules in priority order
+      for (const rule of applicableRules) {
+        const ruleResult = this.applyRule(pricing, rule, metadata);
+        
+        if (ruleResult !== 0) {
+          appliedRules.push({
+            ruleId: rule.id,
+            ruleName: rule.name,
+            ruleType: rule.ruleType,
+            adjustmentType: rule.adjustmentType,
+            adjustmentValue: rule.adjustmentValue,
+            result: ruleResult,
+          });
+
+          switch (rule.adjustmentType) {
+            case PricingType.DISCOUNT:
+              totalDiscount += ruleResult;
+              break;
+            case PricingType.TAX:
+            case PricingType.FEE:
+              totalSurcharge += ruleResult;
+              break;
+            case PricingType.ADJUSTMENT:
+              totalAdjustment += ruleResult;
+              break;
+          }
+        }
+      }
+
+      // Calculate final premium using new structure
+      const finalPremium = pricing.basePremium + (pricing.taxes || 0) + (pricing.fees || 0) - (pricing.discounts || 0) + (pricing.adjustments || 0);
+
+      // Ensure minimum premium
+      const calculatedPremium = Math.max(finalPremium, 0);
+
+      // Update pricing with calculated values
+      pricing.taxes = (pricing.taxes || 0) + totalSurcharge;
+      pricing.discounts = (pricing.discounts || 0) + totalDiscount;
+      pricing.adjustments = (pricing.adjustments || 0) + totalAdjustment;
+      pricing.totalPremium = calculatedPremium;
+
+      // Store calculation metadata
+      pricing.pricingDetails = {
+        ...pricing.pricingDetails,
+        appliedRules,
+        calculationTimestamp: new Date().toISOString(),
+        basePremium: pricing.basePremium,
+        totalDiscount,
+        totalSurcharge,
+        totalAdjustment,
+        finalPremium: calculatedPremium,
+      };
+
+      this.logger.log(`Final premium calculated: ${calculatedPremium} for pricing ${pricing.id}`);
+      return pricing;
+    } catch (error) {
+      this.logger.error('Error calculating final premium:', error);
+      throw error;
+    }
+  }
+
+  private async getApplicableRules(
+    pricing: Pricing,
+    metadata: Record<string, any>,
+  ): Promise<PricingRule[]> {
+    try {
+      // Try to get from cache first
+      const cachedRules = await this.redisService.getCachedPricingRules();
+      if (cachedRules) {
+        return this.filterApplicableRules(cachedRules, pricing, metadata);
+      }
+
+      // Get from database
+      const rules = await this.pricingRuleRepository.find({
+        where: {
+          isActive: true,
+        },
+        order: { priority: 'DESC' },
+      });
+
+      // Cache the rules
+      await this.redisService.cachePricingRules(rules);
+
+      return this.filterApplicableRules(rules, pricing, metadata);
+    } catch (error) {
+      this.logger.error('Error getting applicable rules:', error);
+      return [];
+    }
+  }
+
+  private filterApplicableRules(
+    rules: PricingRule[],
+    pricing: Pricing,
+    metadata: Record<string, any>,
+  ): PricingRule[] {
+    return rules.filter(rule => {
+      // Check if rule is currently valid
+      if (!rule.isCurrentlyValid()) {
+        return false;
+      }
+
+      // Check if rule is applicable to the current context
+      if (!rule.isApplicable(metadata)) {
+        return false;
+      }
+
+      return true;
+    });
+  }
+
+  private applyRule(
+    pricing: Pricing,
+    rule: PricingRule,
+    metadata: Record<string, any>,
+  ): number {
+    let result = 0;
+
+    // Apply percentage-based adjustments
+    if (rule.adjustmentPercentage) {
+      result = (pricing.basePremium * rule.adjustmentPercentage) / 100;
+    } else {
+      // Apply fixed amount adjustments
+      result = rule.adjustmentValue;
+    }
+
+    return result;
+  }
+}

@@ -1,0 +1,90 @@
+### Pricing Service API Tests
+### Base URL
+@baseUrl = http://localhost:3003/api/v1
+@token = your-jwt-token-here
+
+### Login to get token
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "pricing@portobank.com",
+  "password": "pricing123"
+}
+
+### Create a new pricing
+POST {{baseUrl}}/pricing
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "policyId": "123e4567-e89b-12d3-a456-426614174000",
+  "type": "base",
+  "basePremium": 1000.00,
+  "currency": "BRL",
+  "validFrom": "2024-01-01T00:00:00.000Z",
+  "calculationMetadata": {
+    "riskScore": 0.8,
+    "region": "SP",
+    "productType": "auto",
+    "customerYears": 3
+  },
+  "notes": "Initial pricing calculation"
+}
+
+### Get all pricing records
+GET {{baseUrl}}/pricing?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Get pricing by ID
+GET {{baseUrl}}/pricing/123e4567-e89b-12d3-a456-426614174001
+Authorization: Bearer {{token}}
+
+### Get pricing by policy ID
+GET {{baseUrl}}/pricing/policy/123e4567-e89b-12d3-a456-426614174000
+Authorization: Bearer {{token}}
+
+### Update pricing
+PATCH {{baseUrl}}/pricing/123e4567-e89b-12d3-a456-426614174001
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "discountPercentage": 10.0,
+  "notes": "Applied loyalty discount"
+}
+
+### Approve pricing
+POST {{baseUrl}}/pricing/123e4567-e89b-12d3-a456-426614174001/approve
+Authorization: Bearer {{token}}
+
+### Reject pricing
+POST {{baseUrl}}/pricing/123e4567-e89b-12d3-a456-426614174001/reject
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "reason": "Premium too low for risk profile"
+}
+
+### Recalculate pricing
+POST {{baseUrl}}/pricing/123e4567-e89b-12d3-a456-426614174001/recalculate
+Authorization: Bearer {{token}}
+
+### Deactivate pricing
+POST {{baseUrl}}/pricing/123e4567-e89b-12d3-a456-426614174001/deactivate
+Authorization: Bearer {{token}}
+
+### Get pricing history
+GET {{baseUrl}}/pricing/123e4567-e89b-12d3-a456-426614174001/history?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Filter pricing by status
+GET {{baseUrl}}/pricing?status=active&page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Health check
+GET {{baseUrl}}/../health
+
+### Service status
+GET {{baseUrl}}/../

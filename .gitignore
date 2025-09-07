@@ -1,0 +1,232 @@
+# ===========================================
+# BACKEND EMITION - .gitignore
+# ===========================================
+
+# ===========================================
+# Node.js
+# ===========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Package lock files (não manter no repositório)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ===========================================
+# Build & Compilation
+# ===========================================
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# ===========================================
+# Testing & Coverage
+# ===========================================
+coverage/
+.nyc_output/
+*.lcov
+junit.xml
+
+# ===========================================
+# Environment Variables
+# ===========================================
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.staging
+
+# ===========================================
+# Logs
+# ===========================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# ===========================================
+# Runtime & Cache
+# ===========================================
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.vuepress/dist
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+
+# ===========================================
+# Temporary Files
+# ===========================================
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# ===========================================
+# Docker
+# ===========================================
+docker-compose.override.yml
+.dockerignore
+
+# ===========================================
+# IDEs & Editors
+# ===========================================
+# VSCode
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ===========================================
+# Operating System
+# ===========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ===========================================
+# Database
+# ===========================================
+*.sqlite
+*.sqlite3
+*.db
+
+# ===========================================
+# Security & Keys
+# ===========================================
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+secrets/
+.secrets/
+
+# ===========================================
+# Backup Files
+# ===========================================
+*.bak
+*.backup
+*.old
+*.orig
+
+# ===========================================
+# Misc
+# ===========================================
+.sass-cache/
+.connect.lock
+.typings/
+typings/
+.eslintcache
+.stylelintcache
+*.tgz
+*.tar.gz
+
+# ===========================================
+# Project Specific
+# ===========================================
+# Arquivos de configuração local específicos do projeto
+config/local.json
+config/development.json
+config/production.json
+
+# Arquivos de dados de teste
+test-data/
+sample-data/
+
+# Arquivos de documentação gerada
+docs/generated/
+api-docs/
+
+# ===========================================
+# Microservices Specific
+# ===========================================
+# Cada microserviço pode ter suas próprias pastas temporárias
+*/temp/
+*/tmp/
+*/logs/
+*/uploads/
+*/downloads/
+
+# ===========================================
+# End of .gitignore
+# ===========================================
