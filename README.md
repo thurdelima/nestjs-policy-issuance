@@ -51,11 +51,28 @@ cd webhook-manager-service && npm run start:dev
 ### User Manager Service
 - `user.service.spec.ts` - Testes do serviço de usuários
 - `user.controller.spec.ts` - Testes do controller de usuários
+- `auth.service.spec.ts` - Testes do serviço de autenticação
+- `auth.controller.spec.ts` - Testes do controller de autenticação
+- `rabbitmq.service.spec.ts` - Testes do serviço RabbitMQ
+- `redis.service.spec.ts` - Testes do serviço Redis
 
 ### Policy Issuance Service
 - `policy.service.spec.ts` - Testes do serviço de apólices
 - `policy.controller.spec.ts` - Testes do controller de apólices
 - `external-integration.service.spec.ts` - Testes de integração externa
+- `rabbitmq.service.spec.ts` - Testes do serviço RabbitMQ
+
+### Credit Assessment Service
+- `credit-assessment.service.spec.ts` - Testes do serviço de avaliação de crédito
+- `credit-assessment.controller.spec.ts` - Testes do controller de avaliação de crédito
+- `assessment-criteria.service.spec.ts` - Testes do serviço de critérios de avaliação
+- `assessment-log.service.spec.ts` - Testes do serviço de logs de avaliação
+- `credit-scoring.service.spec.ts` - Testes do serviço de scoring de crédito
+
+### Pricing Service
+- `pricing-calculation.service.spec.ts` - Testes do serviço de cálculo de preços
+- `pricing-history.service.spec.ts` - Testes do serviço de histórico de preços
+- `pricing.controller.spec.ts` - Testes do controller de preços
 
 ## 📚 Documentação das APIs
 
