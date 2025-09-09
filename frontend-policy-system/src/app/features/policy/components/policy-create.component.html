@@ -1,0 +1,139 @@
+<div class="policy-container">
+  <app-header></app-header>
+
+  <div class="content">
+    <mat-card class="policy-card">
+      <mat-card-header>
+        <mat-card-title>Criar Nova Apólice</mat-card-title>
+        <mat-card-subtitle>Preencha os dados para criar uma nova apólice de seguro</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form [formGroup]="policyForm" (ngSubmit)="onSubmit()" class="policy-form">
+          <mat-stepper #stepper>
+            <!-- Step 1: Dados da Apólice -->
+            <mat-step label="Dados da Apólice">
+              <div class="step-content">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Tipo de Seguro</mat-label>
+                  <mat-select formControlName="type">
+                    <mat-option value="fianca">Fiança</mat-option>
+                    <mat-option value="capitalizacao">Capitalização</mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="policyForm.get('type')?.hasError('required')">
+                    Tipo é obrigatório
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Valor da Cobertura (R$)</mat-label>
+                  <input matInput type="number" formControlName="coverageAmount" placeholder="100000">
+                  <mat-error *ngIf="policyForm.get('coverageAmount')?.hasError('required')">
+                    Valor da cobertura é obrigatório
+                  </mat-error>
+                  <mat-error *ngIf="policyForm.get('coverageAmount')?.hasError('min')">
+                    Valor deve ser maior que zero
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Valor do Prêmio (R$)</mat-label>
+                  <input matInput type="number" formControlName="premiumAmount" placeholder="1000">
+                  <mat-error *ngIf="policyForm.get('premiumAmount')?.hasError('required')">
+                    Valor do prêmio é obrigatório
+                  </mat-error>
+                  <mat-error *ngIf="policyForm.get('premiumAmount')?.hasError('min')">
+                    Valor deve ser maior que zero
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Data de Início</mat-label>
+                  <input matInput [matDatepicker]="startPicker" formControlName="startDate">
+                  <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #startPicker></mat-datepicker>
+                  <mat-error *ngIf="policyForm.get('startDate')?.hasError('required')">
+                    Data de início é obrigatória
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Data de Fim</mat-label>
+                  <input matInput [matDatepicker]="endPicker" formControlName="endDate">
+                  <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #endPicker></mat-datepicker>
+                  <mat-error *ngIf="policyForm.get('endDate')?.hasError('required')">
+                    Data de fim é obrigatória
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="step-actions">
+                <button mat-button matStepperNext>Próximo</button>
+              </div>
+            </mat-step>
+
+            <!-- Step 2: Detalhes da Cobertura -->
+            <mat-step label="Detalhes da Cobertura">
+              <div class="step-content">
+                <div formGroupName="coverageDetails">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Descrição da Cobertura</mat-label>
+                    <textarea matInput formControlName="description" placeholder="Descreva os detalhes da cobertura" rows="3"></textarea>
+                    <mat-error *ngIf="policyForm.get('coverageDetails.description')?.hasError('required')">
+                      Descrição é obrigatória
+                    </mat-error>
+                  </mat-form-field>
+
+                  <div class="coverage-section">
+                    <h4>Termos da Cobertura</h4>
+                    <div formArrayName="terms">
+                      <div *ngFor="let term of getTermsArray()?.controls || []; let i = index" class="coverage-item">
+                        <mat-form-field appearance="outline" class="full-width">
+                          <mat-label>Termo {{ i + 1 }}</mat-label>
+                          <input matInput [formControlName]="i" placeholder="Ex: Cobertura por 12 meses">
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="coverage-section">
+                    <h4>Exclusões</h4>
+                    <div formArrayName="exclusions">
+                      <div *ngFor="let exclusion of getExclusionsArray()?.controls || []; let i = index" class="coverage-item">
+                        <mat-form-field appearance="outline" class="full-width">
+                          <mat-label>Exclusão {{ i + 1 }}</mat-label>
+                          <input matInput [formControlName]="i" placeholder="Ex: Danos causados por terceiros">
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="coverage-section">
+                    <h4>Condições</h4>
+                    <div formArrayName="conditions">
+                      <div *ngFor="let condition of getConditionsArray()?.controls || []; let i = index" class="coverage-item">
+                        <mat-form-field appearance="outline" class="full-width">
+                          <mat-label>Condição {{ i + 1 }}</mat-label>
+                          <input matInput [formControlName]="i" placeholder="Ex: Pagamento em dia">
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <button mat-button matStepperPrevious>Anterior</button>
+                <button mat-raised-button color="primary" type="submit" [disabled]="policyForm.invalid || isLoading">
+                  <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+                  <span *ngIf="!isLoading">Criar Apólice</span>
+                </button>
+              </div>
+            </mat-step>
+          </mat-stepper>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -1,0 +1,59 @@
+.policy-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.content {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.policy-card {
+  margin-top: 20px;
+}
+
+.policy-form {
+  margin-top: 20px;
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.step-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+mat-card-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+mat-card-title {
+  color: #1976d2;
+  font-weight: 500;
+}
+
+.coverage-section {
+  margin: 20px 0;
+}
+
+.coverage-section h4 {
+  color: #1976d2;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.coverage-item {
+  margin-bottom: 10px;
+}

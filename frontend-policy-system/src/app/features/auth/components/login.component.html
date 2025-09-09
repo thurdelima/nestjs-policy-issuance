@@ -1,0 +1,41 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <div class="custom-header">
+      <h2 class="header-title">Login - Porto Bank Digital</h2>
+      <p class="header-subtitle">Sistema de Emissão de Apólices</p>
+    </div>
+
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="seu@email.com">
+          <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+            Email é obrigatório
+          </mat-error>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+            Email inválido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Senha</mat-label>
+          <input matInput type="password" formControlName="password" placeholder="Sua senha">
+          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+            Senha é obrigatória
+          </mat-error>
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="full-width login-button"
+          [disabled]="loginForm.invalid || isLoading">
+          <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+          <span *ngIf="!isLoading">Entrar</span>
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

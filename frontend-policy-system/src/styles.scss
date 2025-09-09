@@ -1,0 +1,19 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Reset para mat-card-header que pode estar interferindo */
+mat-card-header {
+  display: block !important;
+  text-align: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.mat-mdc-card-header {
+  display: block !important;
+  text-align: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}

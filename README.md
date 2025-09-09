@@ -36,9 +36,19 @@ cd user-manager-service && npm run start:dev
 cd webhook-manager-service && npm run start:dev
 ```
 
+### 3. Executar o Frontend (Opcional)
+
+```bash
+# Frontend Angular
+cd frontend-policy-system && npm start
+```
+
+Acesse: **http://localhost:4200**
+
 ## 🛠️ Tecnologias Utilizadas
 
 - **Backend:** NestJS, TypeScript, Node.js
+- **Frontend:** Angular 19x, Angular Material, TypeScript
 - **Banco de Dados:** PostgreSQL, TypeORM
 - **Message Broker:** RabbitMQ
 - **Cache:** Redis
@@ -92,6 +102,7 @@ Cada microserviço possui documentação Swagger disponível em:
 - ✅ **Precificação** - Criação e gestão de precificações
 - ✅ **Webhooks** - Processamento de pagamentos
 - ✅ **Auditoria** - Logs e eventos de sistema
+- ✅ **Frontend Web** - Interface Angular para usuários
 
 ## 🔧 Estrutura do Projeto
 
@@ -102,6 +113,7 @@ backend-emition/
 ├── pricing-service/            # Serviço de precificação
 ├── user-manager-service/       # Serviço de gestão de usuários
 ├── webhook-manager-service/    # Serviço de webhooks
+├── frontend-policy-system/     # Frontend Angular
 ├── init-scripts/              # Scripts de inicialização do banco
 ├── docker-compose.yml         # Configuração dos containers
 └── test-database-structure.sh # Script de teste da estrutura
@@ -116,3 +128,4 @@ Após executar os comandos acima, o sistema estará totalmente funcional com:
 - 📊 **Dados de exemplo** inseridos
 - 🌐 **APIs documentadas** e prontas para uso
 - 🧪 **Testes unitários** implementados
+- 🎨 **Frontend Angular** com interface moderna
