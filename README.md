@@ -88,8 +88,8 @@ Cada microserviço possui documentação Swagger disponível em:
 
 - ✅ **Gestão de Usuários** - Autenticação e autorização
 - ✅ **Emissão de Apólices** - Criação e gestão de apólices
-- ✅ **Avaliação de Crédito** - Análise de risco e scoring
-- ✅ **Precificação** - Cálculo de prêmios e taxas
+- ✅ **Avaliação de Crédito** - Criação e gestão de avaliações de crédito
+- ✅ **Precificação** - Criação e gestão de precificações
 - ✅ **Webhooks** - Processamento de pagamentos
 - ✅ **Auditoria** - Logs e eventos de sistema
 
