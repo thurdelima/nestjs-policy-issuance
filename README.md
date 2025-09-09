@@ -4,7 +4,7 @@ Sistema completo de microserviços para gestão e emissão de apólices de segur
 
 ## 🏗️ Arquitetura
 
-![Arquitetura do Sistema](./arquitecture.png)
+![Arquitetura do Sistema](./archtecture.png)
 
 ## 🚀 Como Executar
 
