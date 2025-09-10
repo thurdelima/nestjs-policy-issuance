@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Policy, PolicyStatus, PolicyType, PaymentStatus } from '../../entities/policy.entity';
 import { PolicyEvent, EventType } from '../../entities/policy-event.entity';
-// User entity removed - using external User Manager Service
 import { CreatePolicyDto } from './dto/create-policy.dto';
 import { UpdatePolicyDto } from './dto/update-policy.dto';
 import { PolicyEventService } from './services/policy-event.service';
@@ -19,10 +18,8 @@ export class PolicyService {
   ) {}
 
   async create(createPolicyDto: CreatePolicyDto, agentId: string): Promise<Policy> {
-    // Generate policy number
     const policyNumber = await this.generatePolicyNumber(createPolicyDto.type);
 
-    // Create policy
     const policy = this.policyRepository.create({
       ...createPolicyDto,
       policyNumber,
@@ -32,7 +29,6 @@ export class PolicyService {
 
     const savedPolicy = await this.policyRepository.save(policy);
 
-    // Create event
     await this.policyEventService.createEvent(
       savedPolicy.id,
       EventType.POLICY_CREATED,
@@ -107,7 +103,6 @@ export class PolicyService {
   async update(id: string, updatePolicyDto: UpdatePolicyDto): Promise<Policy> {
     const policy = await this.findOne(id);
 
-    // Check if policy can be updated
     if (policy.status === PolicyStatus.ACTIVE && updatePolicyDto.status !== PolicyStatus.CANCELLED) {
       throw new BadRequestException('Active policies can only be cancelled');
     }
@@ -115,7 +110,6 @@ export class PolicyService {
     Object.assign(policy, updatePolicyDto);
     const updatedPolicy = await this.policyRepository.save(policy);
 
-    // Create event
     await this.policyEventService.createEvent(
       id,
       EventType.POLICY_UPDATED,
@@ -143,11 +137,9 @@ export class PolicyService {
       throw new BadRequestException('Only draft policies can initiate credit assessment');
     }
 
-    // Update policy status
     policy.status = PolicyStatus.PENDING_CREDIT_ASSESSMENT;
     await this.policyRepository.save(policy);
 
-    // Create event
     await this.policyEventService.createEvent(
       policyId,
       EventType.CREDIT_ASSESSMENT_REQUESTED,
@@ -155,7 +147,6 @@ export class PolicyService {
       { policyId },
     );
 
-    // Send message to credit assessment service
     await this.externalIntegrationService.requestCreditAssessment(policy);
 
     return policy;
@@ -168,12 +159,10 @@ export class PolicyService {
       throw new BadRequestException('Policy is not in credit assessment status');
     }
 
-    // Update policy with credit assessment result
     policy.creditAssessment = assessmentResult;
     policy.status = PolicyStatus.PENDING_PRICING;
     await this.policyRepository.save(policy);
 
-    // Create event
     await this.policyEventService.createEvent(
       policyId,
       EventType.CREDIT_ASSESSMENT_COMPLETED,
@@ -181,7 +170,6 @@ export class PolicyService {
       { assessmentResult },
     );
 
-    // Send message to pricing service
     await this.externalIntegrationService.requestPricing(policy);
 
     return policy;
@@ -194,14 +182,12 @@ export class PolicyService {
       throw new BadRequestException('Policy is not in pricing status');
     }
 
-    // Update policy with pricing result
     policy.pricingDetails = pricingResult;
     policy.premiumAmount = pricingResult.totalPremium;
     policy.status = PolicyStatus.PENDING_PAYMENT;
-    policy.paymentDueDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
+    policy.paymentDueDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     await this.policyRepository.save(policy);
 
-    // Create event
     await this.policyEventService.createEvent(
       policyId,
       EventType.PRICING_COMPLETED,
@@ -213,43 +199,19 @@ export class PolicyService {
   }
 
   async processPayment(policyId: string, paymentData: any): Promise<Policy> {
-    console.log('🔍 [DEBUG] Starting processPayment for policyId:', policyId);
-    
     const policy = await this.findOne(policyId);
-    console.log('🔍 [DEBUG] Policy found:', {
-      id: policy.id,
-      status: policy.status,
-      paymentStatus: policy.paymentStatus,
-      policyNumber: policy.policyNumber
-    });
 
     if (policy.status !== PolicyStatus.PENDING_PAYMENT && policy.status !== PolicyStatus.DRAFT) {
-      console.log('❌ [DEBUG] Policy status validation failed:', {
-        currentStatus: policy.status,
-        expectedStatuses: [PolicyStatus.PENDING_PAYMENT, PolicyStatus.DRAFT]
-      });
       throw new BadRequestException('Policy is not in payment pending status or draft status');
     }
-    
-    console.log('✅ [DEBUG] Policy status validation passed, proceeding with payment...');
 
-    // Update payment status
-    console.log('🔄 [DEBUG] Updating policy status and payment info...');
     policy.paymentStatus = PaymentStatus.PAID;
     policy.paymentDate = new Date();
     policy.status = PolicyStatus.ACTIVE;
     policy.effectiveDate = new Date();
     
-    console.log('💾 [DEBUG] Saving policy to database...');
     const savedPolicy = await this.policyRepository.save(policy);
-    console.log('✅ [DEBUG] Policy saved successfully:', {
-      id: savedPolicy.id,
-      status: savedPolicy.status,
-      paymentStatus: savedPolicy.paymentStatus,
-      paymentDate: savedPolicy.paymentDate
-    });
 
-    // Create event
     await this.policyEventService.createEvent(
       policyId,
       EventType.PAYMENT_PROCESSED,
@@ -257,13 +219,10 @@ export class PolicyService {
       { paymentData },
     );
 
-    // Send messages to billing, accounting and payment services
-    console.log('📤 [DEBUG] Sending notifications to external services...');
     await this.externalIntegrationService.notifyBillingService(policy);
     await this.externalIntegrationService.notifyAccountingService(policy);
     await this.externalIntegrationService.notifyPaymentService(policy, paymentData);
     
-    console.log('🎉 [DEBUG] Payment processing completed successfully!');
     return savedPolicy;
   }
 
@@ -279,7 +238,6 @@ export class PolicyService {
     policy.cancellationReason = reason;
     await this.policyRepository.save(policy);
 
-    // Create event
     await this.policyEventService.createEvent(
       policyId,
       EventType.POLICY_CANCELLED,
@@ -295,7 +253,6 @@ export class PolicyService {
     const year = new Date().getFullYear();
     const month = String(new Date().getMonth() + 1).padStart(2, '0');
     
-    // Get the last policy number for this type and month
     const lastPolicy = await this.policyRepository
       .createQueryBuilder('policy')
       .where('policy.policyNumber LIKE :pattern', { pattern: `${prefix}${year}${month}%` })

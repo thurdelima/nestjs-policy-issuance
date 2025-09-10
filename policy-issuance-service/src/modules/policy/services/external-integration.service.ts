@@ -21,7 +21,6 @@ export class ExternalIntegrationService {
         coverageAmount: policy.coverageAmount,
         type: policy.type,
         customerData: {
-          // In a real scenario, you would fetch customer data
           cpf: 'customer-cpf',
           name: 'customer-name',
         },
@@ -137,16 +136,11 @@ export class ExternalIntegrationService {
     }
   }
 
-  // Webhook endpoints for external services to call back
   async handleCreditAssessmentResponse(policyId: string, assessmentResult: any): Promise<void> {
-    // This would be called by the credit assessment service
     this.logger.log(`Received credit assessment response for policy ${policyId}`);
-    // The actual handling would be done in the PolicyService
   }
 
   async handlePricingResponse(policyId: string, pricingResult: any): Promise<void> {
-    // This would be called by the pricing service
     this.logger.log(`Received pricing response for policy ${policyId}`);
-    // The actual handling would be done in the PolicyService
   }
 }

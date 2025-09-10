@@ -8,9 +8,8 @@ import {
   JoinColumn,
   Index,
 } from 'typeorm';
-// User entity removed - using external User Manager Service
 
-export enum PolicyType {
+export enum   PolicyType {
   FIANCA = 'fianca',
   CAPITALIZACAO = 'capitalizacao',
 }
@@ -123,15 +122,11 @@ export class Policy {
   @Column({ type: 'jsonb', nullable: true })
   metadata: Record<string, any>;
 
-  // Foreign Keys
   @Column({ type: 'uuid', name: 'customer_id' })
   customerId: string;
 
   @Column({ type: 'uuid', nullable: true, name: 'agent_id' })
   agentId: string;
-
-  // Relations removed - using external User Manager Service
-  // customerId and agentId are now just UUID strings
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

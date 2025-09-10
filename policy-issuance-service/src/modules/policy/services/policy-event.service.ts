@@ -59,7 +59,6 @@ export class PolicyEventService {
 
     event.status = status;
     
-    // Store error message in metadata if provided
     if (errorMessage) {
       event.metadata = {
         ...event.metadata,

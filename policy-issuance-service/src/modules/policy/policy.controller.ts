@@ -55,7 +55,6 @@ export class PolicyController {
   ) {
     const filters: any = { status, type, customerId };
     
-    // Agents can only see their own policies
     if (user.role === 'agent') {
       filters.agentId = user.id;
     }

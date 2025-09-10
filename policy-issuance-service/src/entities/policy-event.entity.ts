@@ -62,7 +62,6 @@ export class PolicyEvent {
   @Column({ type: 'jsonb', nullable: true })
   metadata: Record<string, any>;
 
-  // Relations
   @ManyToOne(() => Policy, (policy) => policy.id)
   @JoinColumn({ name: 'policy_id' })
   policy: Policy;

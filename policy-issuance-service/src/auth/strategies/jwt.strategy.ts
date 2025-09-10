@@ -28,8 +28,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload): Promise<User> {
-    // Simplified validation - in a real scenario, this would call the User Manager Service
-    // For now, we'll return a mock user based on the JWT payload
     const roleNames = {
       'admin': 'Admin User',
       'agent': 'Agent User',
