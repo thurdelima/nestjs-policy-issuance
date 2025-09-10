@@ -26,8 +26,17 @@
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Valor da Cobertura (R$)</mat-label>
-                  <input matInput type="number" formControlName="coverageAmount" placeholder="100000">
+                  <mat-label>Valor da Cobertura</mat-label>
+                  <input matInput
+                         type="text"
+                         formControlName="coverageAmount"
+                         placeholder="R$ 100.000,00"
+                         mask="separator.2"
+                         thousandSeparator="."
+                         decimalMarker=","
+                         prefix="R$ "
+                         [allowNegativeNumbers]="false"
+                         [dropSpecialCharacters]="false">
                   <mat-error *ngIf="policyForm.get('coverageAmount')?.hasError('required')">
                     Valor da cobertura é obrigatório
                   </mat-error>
@@ -37,8 +46,17 @@
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Valor do Prêmio (R$)</mat-label>
-                  <input matInput type="number" formControlName="premiumAmount" placeholder="1000">
+                  <mat-label>Valor do Prêmio</mat-label>
+                  <input matInput
+                         type="text"
+                         formControlName="premiumAmount"
+                         placeholder="R$ 1.000,00"
+                         mask="separator.2"
+                         thousandSeparator="."
+                         decimalMarker=","
+                         prefix="R$ "
+                         [allowNegativeNumbers]="false"
+                         [dropSpecialCharacters]="false">
                   <mat-error *ngIf="policyForm.get('premiumAmount')?.hasError('required')">
                     Valor do prêmio é obrigatório
                   </mat-error>

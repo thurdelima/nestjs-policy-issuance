@@ -40,8 +40,8 @@ export class PolicyCreateComponent implements OnInit {
     this.policyForm = this.fb.group({
       type: ['', [Validators.required]],
       customerId: [this.generateUUID()], // UUID válido
-      coverageAmount: [0, [Validators.required, Validators.min(1)]],
-      premiumAmount: [0, [Validators.required, Validators.min(1)]],
+      coverageAmount: ['', [Validators.required, this.monetaryValidator]],
+      premiumAmount: ['', [Validators.required, this.monetaryValidator]],
       startDate: ['', [Validators.required]],
       endDate: ['', [Validators.required]],
       coverageDetails: this.fb.group({
@@ -63,6 +63,32 @@ export class PolicyCreateComponent implements OnInit {
       startDate: today,
       endDate: nextYear
     });
+  }
+
+  // Validador para valores monetários
+  private monetaryValidator(control: any) {
+    if (!control.value) {
+      return { required: true };
+    }
+
+    const value = control.value.toString();
+    // Remove R$, espaços e converte para número
+    const numericValue = parseFloat(value.replace(/[R$\s.]/g, '').replace(',', '.'));
+
+    if (isNaN(numericValue) || numericValue <= 0) {
+      return { min: true };
+    }
+
+    return null;
+  }
+
+  // Converter valor monetário para número
+  private convertMonetaryToNumber(monetaryValue: string): number {
+    if (!monetaryValue) return 0;
+
+    // Remove R$, espaços e converte para número
+    const cleanValue = monetaryValue.replace(/[R$\s.]/g, '').replace(',', '.');
+    return parseFloat(cleanValue) || 0;
   }
 
   private generateUUID(): string {
@@ -122,12 +148,16 @@ export class PolicyCreateComponent implements OnInit {
       this.isLoading = true;
       const formValue = this.policyForm.value;
 
+      // Converter valores monetários para números
+      const coverageAmount = this.convertMonetaryToNumber(formValue.coverageAmount);
+      const premiumAmount = this.convertMonetaryToNumber(formValue.premiumAmount);
+
       // Converter datas para string ISO e preparar dados
       const policyData: PolicyRequest = {
         type: formValue.type,
         customerId: formValue.customerId,
-        coverageAmount: formValue.coverageAmount,
-        premiumAmount: formValue.premiumAmount,
+        coverageAmount: coverageAmount,
+        premiumAmount: premiumAmount,
         startDate: formValue.startDate.toISOString().split('T')[0],
         endDate: formValue.endDate.toISOString().split('T')[0],
         coverageDetails: {
