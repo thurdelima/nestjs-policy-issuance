@@ -22,7 +22,6 @@ export class CreditAssessmentService {
   ) {}
 
   async create(createDto: CreateCreditAssessmentDto): Promise<CreditAssessment> {
-    // Check if assessment already exists for this policy
     const existingAssessment = await this.creditAssessmentRepository.findOne({
       where: { policyId: createDto.policyId },
     });
@@ -31,7 +30,6 @@ export class CreditAssessmentService {
       throw new BadRequestException('Credit assessment already exists for this policy');
     }
 
-    // Create assessment
     const assessment = this.creditAssessmentRepository.create({
       ...createDto,
       status: AssessmentStatus.PENDING,
@@ -39,7 +37,6 @@ export class CreditAssessmentService {
 
     const savedAssessment = await this.creditAssessmentRepository.save(assessment);
 
-    // Log assessment creation
     await this.assessmentLogService.createLog(
       savedAssessment.id,
       LogAction.ASSESSMENT_STARTED,
@@ -113,7 +110,6 @@ export class CreditAssessmentService {
     Object.assign(assessment, updateDto);
     const updatedAssessment = await this.creditAssessmentRepository.save(assessment);
 
-    // Log update
     await this.assessmentLogService.createLog(
       id,
       LogAction.ASSESSMENT_STARTED,
@@ -132,11 +128,9 @@ export class CreditAssessmentService {
       throw new BadRequestException('Assessment is not in pending status');
     }
 
-    // Update status to in progress
     assessment.status = AssessmentStatus.IN_PROGRESS;
     await this.creditAssessmentRepository.save(assessment);
 
-    // Log start of processing
     await this.assessmentLogService.createLog(
       assessmentId,
       LogAction.ASSESSMENT_STARTED,
@@ -145,7 +139,6 @@ export class CreditAssessmentService {
     );
 
     try {
-      // 1. Gather external data
       await this.assessmentLogService.createLog(
         assessmentId,
         LogAction.EXTERNAL_API_CALLED,
@@ -156,7 +149,6 @@ export class CreditAssessmentService {
       const externalData = await this.externalDataService.gatherExternalData(assessment);
       assessment.externalData = externalData;
 
-      // 2. Calculate credit score
       await this.assessmentLogService.createLog(
         assessmentId,
         LogAction.SCORE_CALCULATED,
@@ -169,7 +161,6 @@ export class CreditAssessmentService {
       assessment.riskLevel = scoringResult.riskLevel;
       assessment.assessmentCriteria = scoringResult.criteria;
 
-      // 3. Make decision
       await this.assessmentLogService.createLog(
         assessmentId,
         LogAction.DECISION_MADE,
@@ -184,11 +175,9 @@ export class CreditAssessmentService {
       assessment.termMonths = decision.termMonths;
       assessment.rejectionReason = decision.rejectionReason;
 
-      // 4. Complete assessment
       assessment.status = AssessmentStatus.COMPLETED;
       await this.creditAssessmentRepository.save(assessment);
 
-      // Log completion
       await this.assessmentLogService.createLog(
         assessmentId,
         LogAction.ASSESSMENT_COMPLETED,
@@ -197,13 +186,11 @@ export class CreditAssessmentService {
         { result: decision },
       );
 
-      // 5. Notify policy service
       await this.notifyPolicyService(assessment);
 
       return assessment;
 
     } catch (error) {
-      // Handle error
       assessment.status = AssessmentStatus.FAILED;
       await this.creditAssessmentRepository.save(assessment);
 
@@ -228,7 +215,6 @@ export class CreditAssessmentService {
   }> {
     const { creditScore, riskLevel, requestedAmount } = assessment;
 
-    // Decision logic based on score and risk level
     if (creditScore >= 700 && riskLevel === RiskLevel.LOW) {
       return {
         result: AssessmentResult.APPROVED,
@@ -239,14 +225,14 @@ export class CreditAssessmentService {
     } else if (creditScore >= 600 && riskLevel === RiskLevel.MEDIUM) {
       return {
         result: AssessmentResult.APPROVED,
-        approvedAmount: requestedAmount * 0.8, // 80% of requested amount
+        approvedAmount: requestedAmount * 0.8,
         interestRate: 15.0,
         termMonths: 12,
       };
     } else if (creditScore >= 500 && riskLevel === RiskLevel.MEDIUM) {
       return {
         result: AssessmentResult.APPROVED,
-        approvedAmount: requestedAmount * 0.6, // 60% of requested amount
+        approvedAmount: requestedAmount * 0.6,
         interestRate: 18.0,
         termMonths: 6,
       };

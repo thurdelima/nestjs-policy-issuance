@@ -57,7 +57,6 @@ export class AssessmentLog {
   @Column({ type: 'jsonb', nullable: true, name: 'details' })
   details: Record<string, any>;
 
-  // Relations
   @ManyToOne(() => CreditAssessment, (assessment) => assessment.id)
   @JoinColumn({ name: 'assessment_id' })
   assessment: CreditAssessment;

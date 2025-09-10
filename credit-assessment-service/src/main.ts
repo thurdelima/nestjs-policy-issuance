@@ -6,7 +6,6 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Global validation pipe
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -15,17 +14,13 @@ async function bootstrap() {
     }),
   );
 
-  // CORS configuration
   app.enableCors({
     origin: process.env.CORS_ORIGIN || '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
 
-  // API prefix
   app.setGlobalPrefix(process.env.API_PREFIX || 'api/v1');
-
-  // Swagger configuration
   const config = new DocumentBuilder()
     .setTitle('Credit Assessment Service')
     .setDescription('API para análise e concessão de crédito - Porto Bank Digital')

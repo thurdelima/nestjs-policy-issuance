@@ -52,7 +52,6 @@ export class AssessmentCriteriaService {
   }
 
   async getDefaultCriteria(): Promise<AssessmentCriteria[]> {
-    // Return default criteria if none exist
     const existingCriteria = await this.findAll();
     
     if (existingCriteria.length === 0) {

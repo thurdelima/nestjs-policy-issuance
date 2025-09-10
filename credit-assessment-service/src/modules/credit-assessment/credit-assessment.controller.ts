@@ -119,5 +119,4 @@ export class CreditAssessmentController {
     return this.creditAssessmentService.cancelAssessment(id, reason);
   }
 
-  // Note: Delete functionality not implemented for audit purposes
 }

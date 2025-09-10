@@ -27,7 +27,6 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
 
       this.logger.log('Connected to RabbitMQ');
 
-      // Setup error handlers
       this.connection.on('error', (err) => {
         this.logger.error('RabbitMQ connection error:', err);
       });
