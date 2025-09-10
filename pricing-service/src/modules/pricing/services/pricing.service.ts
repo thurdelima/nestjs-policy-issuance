@@ -28,7 +28,6 @@ export class PricingService {
 
   async create(createPricingDto: CreatePricingDto, userId: string): Promise<Pricing> {
     try {
-      // Check if pricing already exists for this policy
       const existingPricing = await this.pricingRepository.findOne({
         where: { policyId: createPricingDto.policyId, status: PricingStatus.ACTIVE },
       });
@@ -37,14 +36,12 @@ export class PricingService {
         throw new BadRequestException('Active pricing already exists for this policy');
       }
 
-      // Create new pricing
       const pricing = this.pricingRepository.create({
         ...createPricingDto,
         status: PricingStatus.DRAFT,
-        totalPremium: createPricingDto.basePremium, // Will be recalculated
+        totalPremium: createPricingDto.basePremium,
       });
 
-      // Calculate final premium
       const calculatedPricing = await this.pricingCalculationService.calculateFinalPremium(
         pricing,
         createPricingDto.pricingDetails || {},
@@ -52,7 +49,6 @@ export class PricingService {
 
       const savedPricing = await this.pricingRepository.save(calculatedPricing);
 
-      // Log creation
       await this.pricingHistoryService.logAction(
         savedPricing.id,
         'created',
@@ -62,7 +58,6 @@ export class PricingService {
         userId,
       );
 
-      // Publish pricing calculation event
       await this.rabbitMQService.publishPricingCalculationRequest(
         savedPricing.policyId,
         savedPricing,
@@ -135,10 +130,8 @@ export class PricingService {
 
     const oldValues = { ...pricing };
 
-    // Update pricing
     Object.assign(pricing, updatePricingDto);
 
-    // Recalculate if premium values changed
     if (this.hasPremiumChanges(updatePricingDto)) {
       const calculatedPricing = await this.pricingCalculationService.calculateFinalPremium(
         pricing,
@@ -149,7 +142,6 @@ export class PricingService {
 
     const updatedPricing = await this.pricingRepository.save(pricing);
 
-    // Log update
     await this.pricingHistoryService.logAction(
       id,
       'updated',
@@ -178,7 +170,6 @@ export class PricingService {
 
     const approvedPricing = await this.pricingRepository.save(pricing);
 
-    // Log approval
     await this.pricingHistoryService.logAction(
       id,
       'approved',
@@ -188,7 +179,6 @@ export class PricingService {
       userId,
     );
 
-    // Publish approval event
     await this.rabbitMQService.publishPricingResult(
       approvedPricing.policyId,
       approvedPricing,
@@ -212,7 +202,6 @@ export class PricingService {
 
     const rejectedPricing = await this.pricingRepository.save(pricing);
 
-    // Log rejection
     await this.pricingHistoryService.logAction(
       id,
       'rejected',
@@ -231,7 +220,6 @@ export class PricingService {
 
     const oldValues = { ...pricing };
 
-    // Recalculate final premium
     const calculatedPricing = await this.pricingCalculationService.calculateFinalPremium(
       pricing,
       pricing.pricingDetails || {},
@@ -240,7 +228,6 @@ export class PricingService {
     Object.assign(pricing, calculatedPricing);
     const recalculatedPricing = await this.pricingRepository.save(pricing);
 
-    // Log recalculation
     await this.pricingHistoryService.logAction(
       id,
       'calculated',
@@ -266,7 +253,6 @@ export class PricingService {
     pricing.status = PricingStatus.INACTIVE;
     const deactivatedPricing = await this.pricingRepository.save(pricing);
 
-    // Log deactivation
     await this.pricingHistoryService.logAction(
       id,
       'deactivated',

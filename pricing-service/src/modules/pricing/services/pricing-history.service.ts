@@ -137,7 +137,6 @@ export class PricingHistoryService {
       take: limit,
     });
 
-    // Filter for significant changes
     const significantChanges = data.filter(history => history.hasSignificantChange);
 
     return {

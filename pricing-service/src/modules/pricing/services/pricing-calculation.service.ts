@@ -22,7 +22,6 @@ export class PricingCalculationService {
     try {
       this.logger.log(`Calculating final premium for pricing ${pricing.id}`);
 
-      // Get applicable rules
       const applicableRules = await this.getApplicableRules(pricing, metadata);
 
       let totalDiscount = 0;
@@ -31,7 +30,6 @@ export class PricingCalculationService {
 
       const appliedRules = [];
 
-      // Apply rules in priority order
       for (const rule of applicableRules) {
         const ruleResult = this.applyRule(pricing, rule, metadata);
         
@@ -60,19 +58,15 @@ export class PricingCalculationService {
         }
       }
 
-      // Calculate final premium using new structure
       const finalPremium = pricing.basePremium + (pricing.taxes || 0) + (pricing.fees || 0) - (pricing.discounts || 0) + (pricing.adjustments || 0);
 
-      // Ensure minimum premium
       const calculatedPremium = Math.max(finalPremium, 0);
 
-      // Update pricing with calculated values
       pricing.taxes = (pricing.taxes || 0) + totalSurcharge;
       pricing.discounts = (pricing.discounts || 0) + totalDiscount;
       pricing.adjustments = (pricing.adjustments || 0) + totalAdjustment;
       pricing.totalPremium = calculatedPremium;
 
-      // Store calculation metadata
       pricing.pricingDetails = {
         ...pricing.pricingDetails,
         appliedRules,
@@ -97,13 +91,11 @@ export class PricingCalculationService {
     metadata: Record<string, any>,
   ): Promise<PricingRule[]> {
     try {
-      // Try to get from cache first
       const cachedRules = await this.redisService.getCachedPricingRules();
       if (cachedRules) {
         return this.filterApplicableRules(cachedRules, pricing, metadata);
       }
 
-      // Get from database
       const rules = await this.pricingRuleRepository.find({
         where: {
           isActive: true,
@@ -111,7 +103,6 @@ export class PricingCalculationService {
         order: { priority: 'DESC' },
       });
 
-      // Cache the rules
       await this.redisService.cachePricingRules(rules);
 
       return this.filterApplicableRules(rules, pricing, metadata);
@@ -127,12 +118,10 @@ export class PricingCalculationService {
     metadata: Record<string, any>,
   ): PricingRule[] {
     return rules.filter(rule => {
-      // Check if rule is currently valid
       if (!rule.isCurrentlyValid()) {
         return false;
       }
 
-      // Check if rule is applicable to the current context
       if (!rule.isApplicable(metadata)) {
         return false;
       }
@@ -148,11 +137,9 @@ export class PricingCalculationService {
   ): number {
     let result = 0;
 
-    // Apply percentage-based adjustments
     if (rule.adjustmentPercentage) {
       result = (pricing.basePremium * rule.adjustmentPercentage) / 100;
     } else {
-      // Apply fixed amount adjustments
       result = rule.adjustmentValue;
     }
 

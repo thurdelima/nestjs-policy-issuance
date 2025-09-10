@@ -27,7 +27,6 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
 
       this.logger.log('Connected to RabbitMQ');
 
-      // Setup pricing-related exchanges and queues
       await this.setupPricingQueues();
     } catch (error) {
       this.logger.error('Failed to connect to RabbitMQ:', error);
@@ -52,18 +51,14 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
   private async setupPricingQueues() {
     const exchange = 'pricing.exchange';
     
-    // Declare exchange
     await this.channel.assertExchange(exchange, 'topic', { durable: true });
 
-    // Pricing calculation queue
     await this.channel.assertQueue('pricing.calculate', { durable: true });
     await this.channel.bindQueue('pricing.calculate', exchange, 'pricing.calculate');
 
-    // Pricing rule updates queue
     await this.channel.assertQueue('pricing.rule.updated', { durable: true });
     await this.channel.bindQueue('pricing.rule.updated', exchange, 'pricing.rule.updated');
 
-    // Pricing approval queue
     await this.channel.assertQueue('pricing.approval', { durable: true });
     await this.channel.bindQueue('pricing.approval', exchange, 'pricing.approval');
 
@@ -107,7 +102,6 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  // Pricing-specific methods
   async publishPricingCalculationRequest(policyId: string, pricingData: any) {
     await this.publishMessage('pricing.exchange', 'pricing.calculate', {
       policyId,

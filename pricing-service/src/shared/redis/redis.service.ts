@@ -54,7 +54,6 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  // Basic Redis operations
   async get(key: string): Promise<string | null> {
     try {
       return await this.client.get(key);
@@ -98,7 +97,6 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  // JSON operations
   async getJson<T>(key: string): Promise<T | null> {
     try {
       const value = await this.get(key);
@@ -119,7 +117,6 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  // Pricing-specific cache operations
   async cachePricingCalculation(policyId: string, pricingData: any, ttl: number = 3600): Promise<boolean> {
     const key = `pricing:calculation:${policyId}`;
     return await this.setJson(key, pricingData, ttl);
@@ -145,7 +142,6 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       if (policyId) {
         await this.del(`pricing:calculation:${policyId}`);
       } else {
-        // Invalidate all pricing-related cache
         const keys = await this.client.keys('pricing:*');
         if (keys.length > 0) {
           await this.client.del(keys);
@@ -158,7 +154,6 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  // Session operations
   async setSession(sessionId: string, sessionData: any, ttl: number = 86400): Promise<boolean> {
     const key = `session:${sessionId}`;
     return await this.setJson(key, sessionData, ttl);

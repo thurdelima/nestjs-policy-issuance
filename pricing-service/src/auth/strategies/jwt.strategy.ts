@@ -18,7 +18,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: JwtPayload): Promise<User> {
     try {
-      // Create user object from JWT payload
       const user: User = {
         id: payload.sub,
         email: payload.email,

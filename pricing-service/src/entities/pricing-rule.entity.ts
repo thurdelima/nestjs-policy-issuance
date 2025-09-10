@@ -93,7 +93,6 @@ export class PricingRule {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  // Helper methods
   isCurrentlyValid(): boolean {
     const now = new Date();
     return now >= this.effectiveDate && (!this.expirationDate || now <= this.expirationDate);
@@ -104,7 +103,6 @@ export class PricingRule {
       return false;
     }
 
-    // Simple condition matching logic
     for (const [key, value] of Object.entries(this.conditionValue)) {
       if (conditionData[key] !== value) {
         return false;

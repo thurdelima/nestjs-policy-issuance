@@ -98,7 +98,6 @@ export class Pricing {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  // Virtual fields for calculations
   get netPremium(): number {
     return this.basePremium + this.taxes + this.fees - this.discounts + this.adjustments;
   }

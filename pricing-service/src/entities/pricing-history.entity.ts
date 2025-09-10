@@ -41,7 +41,6 @@ export class PricingHistory {
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  // Helper methods
   get changeSummary(): string {
     switch (this.action) {
       case 'created':
