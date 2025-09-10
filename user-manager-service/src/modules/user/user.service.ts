@@ -14,7 +14,6 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    // Check if user already exists
     const existingUser = await this.userRepository.findOne({
       where: [
         { email: createUserDto.email },
@@ -26,10 +25,8 @@ export class UserService {
       throw new ConflictException('User with this email or CPF already exists');
     }
 
-    // Hash password
     const hashedPassword = await this.hashPassword(createUserDto.password);
 
-    // Create user
     const user = this.userRepository.create({
       ...createUserDto,
       password: hashedPassword,
@@ -76,7 +73,6 @@ export class UserService {
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findById(id);
 
-    // Check if email or CPF already exists for another user
     if (updateUserDto.email || updateUserDto.cpf) {
       const existingUser = await this.userRepository.findOne({
         where: [
@@ -90,7 +86,6 @@ export class UserService {
       }
     }
 
-    // Hash password if provided
     if (updateUserDto.password) {
       updateUserDto.password = await this.hashPassword(updateUserDto.password);
     }

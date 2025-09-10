@@ -27,7 +27,6 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
 
       this.logger.log('Connected to RabbitMQ');
 
-      // Setup user-related exchanges and queues
       await this.setupUserQueues();
     } catch (error) {
       this.logger.error('Failed to connect to RabbitMQ:', error);
@@ -52,18 +51,14 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
   private async setupUserQueues() {
     const exchange = 'user.exchange';
     
-    // Declare exchange
     await this.channel.assertExchange(exchange, 'topic', { durable: true });
 
-    // User created queue
     await this.channel.assertQueue('user.created', { durable: true });
     await this.channel.bindQueue('user.created', exchange, 'user.created');
 
-    // User updated queue
     await this.channel.assertQueue('user.updated', { durable: true });
     await this.channel.bindQueue('user.updated', exchange, 'user.updated');
 
-    // User deleted queue
     await this.channel.assertQueue('user.deleted', { durable: true });
     await this.channel.bindQueue('user.deleted', exchange, 'user.deleted');
 
@@ -85,7 +80,6 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  // User-specific methods
   async publishUserCreated(userData: any) {
     await this.publishMessage('user.exchange', 'user.created', {
       userData,

@@ -67,8 +67,6 @@ export class AuthService {
   }
 
   async register(registerDto: any): Promise<User> {
-    // This method should be implemented in a separate service or controller
-    // to avoid circular dependency
     throw new Error('Register method should be implemented in UserController');
   }
 

@@ -54,7 +54,6 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  // Basic Redis operations
   async get(key: string): Promise<string | null> {
     try {
       return await this.client.get(key);
@@ -88,7 +87,6 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  // JSON operations
   async getJson<T>(key: string): Promise<T | null> {
     try {
       const value = await this.get(key);
@@ -109,7 +107,6 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  // User-specific cache operations
   async cacheUser(userId: string, userData: any, ttl: number = 3600): Promise<boolean> {
     const key = `user:${userId}`;
     return await this.setJson(key, userData, ttl);
