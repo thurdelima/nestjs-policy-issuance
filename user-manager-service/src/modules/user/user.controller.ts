@@ -29,7 +29,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  @SetMetadata('skipAuth', true) // Skip authentication for this endpoint
+  @SetMetadata('skipAuth', true)
   @ApiOperation({ summary: 'Create a new user' })
   @ApiResponse({ status: 201, description: 'User created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
