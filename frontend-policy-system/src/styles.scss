@@ -17,3 +17,29 @@ mat-card-header {
   margin: 0 !important;
   padding: 0 !important;
 }
+
+/* Responsividade do Stepper */
+@media (max-width: 768px) {
+  .mat-stepper-horizontal {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mat-step-header {
+    padding: 8px 4px;
+  }
+
+  .mat-step-label {
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  .mat-step-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .mat-step-icon .mat-icon {
+    font-size: 16px;
+  }
+}

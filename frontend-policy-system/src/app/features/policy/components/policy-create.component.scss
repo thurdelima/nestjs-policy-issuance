@@ -1,0 +1,140 @@
+// Variáveis locais
+$primary-color: #1976d2;
+$background-color: #f5f5f5;
+$spacing-xl: 20px;
+$spacing-lg: 16px;
+$spacing-md: 12px;
+$spacing-sm: 8px;
+$font-size-xl: 20px;
+$font-size-md: 16px;
+$font-size-sm: 14px;
+$button-height-md: 48px;
+$mobile-breakpoint: 768px;
+$tablet-breakpoint: 1024px;
+
+.policy-container {
+  min-height: 100vh;
+  background-color: $background-color;
+}
+
+.content {
+  padding: $spacing-xl;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.policy-card {
+  margin-top: $spacing-xl;
+}
+
+.policy-form {
+  margin-top: $spacing-xl;
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  margin: $spacing-xl 0;
+}
+
+.step-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: $spacing-xl;
+}
+
+.full-width {
+  width: 100%;
+}
+
+mat-card-header {
+  text-align: center;
+  margin-bottom: $spacing-xl;
+}
+
+mat-card-title {
+  color: $primary-color;
+  font-weight: 500;
+}
+
+.coverage-section {
+  margin: $spacing-xl 0;
+
+  h4 {
+    color: $primary-color;
+    margin-bottom: $spacing-sm;
+    font-weight: 500;
+  }
+}
+
+.coverage-item {
+  margin-bottom: $spacing-sm;
+}
+
+// Responsividade Mobile
+@media (max-width: $mobile-breakpoint) {
+  .content {
+    padding: $spacing-sm;
+  }
+
+  .policy-card {
+    margin-top: $spacing-sm;
+  }
+
+  .policy-form {
+    margin-top: $spacing-lg;
+  }
+
+  .step-content {
+    gap: $spacing-md;
+    margin: $spacing-lg 0;
+  }
+
+  .step-actions {
+    flex-direction: column;
+    gap: $spacing-sm;
+    margin-top: $spacing-lg;
+
+    button {
+      width: 100%;
+      height: $button-height-md;
+    }
+  }
+
+  .coverage-section {
+    margin: $spacing-lg 0;
+
+    h4 {
+      font-size: $font-size-md;
+      margin-bottom: $spacing-sm;
+    }
+  }
+
+  .coverage-item {
+    margin-bottom: $spacing-sm;
+  }
+
+  mat-card-header {
+    margin-bottom: $spacing-lg;
+  }
+
+  mat-card-title {
+    font-size: $font-size-xl;
+  }
+
+  mat-card-subtitle {
+    font-size: $font-size-sm;
+  }
+}
+
+// Tablet
+@media (max-width: $tablet-breakpoint) and (min-width: 769px) {
+  .content {
+    padding: $spacing-lg;
+  }
+
+  .step-actions {
+    gap: $spacing-lg;
+  }
+}

@@ -1,0 +1,13 @@
+<mat-toolbar color="primary">
+  <div class="logo-container">
+    <img src="insurance.png" alt="Logo" class="logo">
+    <span class="title">Porto Bank Digital - Sistema de Apólices</span>
+  </div>
+  <span class="spacer"></span>
+  <div *ngIf="currentUser" class="user-info">
+    <span>{{ currentUser.name }}</span>
+    <button mat-icon-button (click)="logout()" matTooltip="Sair">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </div>
+</mat-toolbar>

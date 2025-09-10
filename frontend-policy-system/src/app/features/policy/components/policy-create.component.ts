@@ -9,7 +9,7 @@ import { PolicyService, PolicyRequest } from '../../../core/services/policy.serv
   selector: 'app-policy-create',
   standalone: false,
   templateUrl: './policy-create.component.html',
-  styleUrls: ['./policy-create.component.css']
+  styleUrls: ['./policy-create.component.scss']
 })
 export class PolicyCreateComponent implements OnInit {
   @ViewChild('stepper') stepper!: MatStepper;

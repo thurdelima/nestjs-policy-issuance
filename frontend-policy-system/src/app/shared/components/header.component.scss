@@ -1,0 +1,53 @@
+// Variáveis locais
+$logo-size-md: 32px;
+$logo-size-sm: 28px;
+$spacing-sm: 8px;
+$spacing-xs: 4px;
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  height: $logo-size-md;
+  width: auto;
+}
+
+.title {
+  font-weight: 500;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+// Responsividade Mobile
+@media (max-width: 768px) {
+  .title {
+    display: none;
+  }
+
+  .logo-container {
+    gap: $spacing-sm;
+  }
+
+  .logo {
+    height: $logo-size-sm;
+  }
+
+  .user-info span {
+    display: none;
+  }
+
+  .user-info {
+    gap: $spacing-xs;
+  }
+}

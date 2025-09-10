@@ -1,0 +1,88 @@
+// Variáveis locais
+$primary-color: #1976d2;
+$secondary-color: #666;
+$spacing-xl: 20px;
+$spacing-lg: 16px;
+$spacing-md: 12px;
+$spacing-sm: 8px;
+$font-size-xxl: 24px;
+$font-size-sm: 14px;
+$font-size-md: 16px;
+$logo-size-sm: 28px;
+$button-height-md: 48px;
+$font-family: 'Roboto', sans-serif;
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: $spacing-xl;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: $spacing-xl;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.login-button {
+  height: $button-height-md;
+  font-size: $font-size-md;
+}
+
+// Header customizado com divs - Forçar centralização
+.custom-header {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
+  margin-bottom: $spacing-xl !important;
+  padding: $spacing-xl 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.logo-title-container {
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  gap: $spacing-md;
+  margin-bottom: $spacing-sm;
+}
+
+.header-logo {
+  height: $logo-size-sm !important;
+  width: auto !important;
+}
+
+.header-title {
+  color: $primary-color !important;
+  font-weight: 500 !important;
+  font-size: $font-size-xxl !important;
+  margin: 0 0 $spacing-sm 0 !important;
+  font-family: $font-family !important;
+  text-align: center !important;
+  width: 100% !important;
+}
+
+.header-subtitle {
+  color: $secondary-color !important;
+  font-size: $font-size-sm !important;
+  margin: 0 !important;
+  font-family: $font-family !important;
+  text-align: center !important;
+  width: 100% !important;
+}
