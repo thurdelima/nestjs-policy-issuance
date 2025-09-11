@@ -49,6 +49,8 @@ export class PricingService {
 
       const savedPricing = await this.pricingRepository.save(calculatedPricing);
 
+      this.logger.log(`Final premium calculated: ${savedPricing.totalPremium} for pricing ${savedPricing.id}`);
+
       await this.pricingHistoryService.logAction(
         savedPricing.id,
         'created',

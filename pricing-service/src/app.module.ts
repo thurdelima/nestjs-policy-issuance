@@ -11,6 +11,7 @@ import { PricingModule } from './modules/pricing/pricing.module';
 
 import { RabbitMQModule } from './shared/rabbitmq/rabbitmq.module';
 import { RedisModule } from './shared/redis/redis.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { RedisModule } from './shared/redis/redis.module';
       signOptions: { expiresIn: process.env.JWT_EXPIRES_IN || '24h' },
     }),
 
+    AuthModule,
     PricingModule,
 
     RabbitMQModule,

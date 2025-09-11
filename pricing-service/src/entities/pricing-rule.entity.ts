@@ -49,6 +49,7 @@ export class PricingRule {
   description?: string;
 
   @Column({
+    name: 'rule_type',
     type: 'enum',
     enum: RuleType,
   })
@@ -64,6 +65,7 @@ export class PricingRule {
   conditionValue: Record<string, any>;
 
   @Column({
+    name: 'adjustment_type',
     type: 'enum',
     enum: PricingType,
   })

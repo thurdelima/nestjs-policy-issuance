@@ -20,8 +20,6 @@ export class PricingCalculationService {
     metadata: Record<string, any> = {},
   ): Promise<Pricing> {
     try {
-      this.logger.log(`Calculating final premium for pricing ${pricing.id}`);
-
       const applicableRules = await this.getApplicableRules(pricing, metadata);
 
       let totalDiscount = 0;
@@ -78,7 +76,6 @@ export class PricingCalculationService {
         finalPremium: calculatedPremium,
       };
 
-      this.logger.log(`Final premium calculated: ${calculatedPremium} for pricing ${pricing.id}`);
       return pricing;
     } catch (error) {
       this.logger.error('Error calculating final premium:', error);
@@ -93,7 +90,8 @@ export class PricingCalculationService {
     try {
       const cachedRules = await this.redisService.getCachedPricingRules();
       if (cachedRules) {
-        return this.filterApplicableRules(cachedRules, pricing, metadata);
+        const hydratedRules = cachedRules.map((rule) => Object.assign(new PricingRule(), rule));
+        return this.filterApplicableRules(hydratedRules, pricing, metadata);
       }
 
       const rules = await this.pricingRuleRepository.find({

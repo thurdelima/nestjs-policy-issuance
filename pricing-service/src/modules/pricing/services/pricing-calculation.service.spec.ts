@@ -90,7 +90,7 @@ describe('PricingCalculationService', () => {
       const applyRuleSpy = jest.spyOn(service as any, 'applyRule')
         .mockReturnValueOnce(100) // Discount
         .mockReturnValueOnce(50); // Surcharge
-      const loggerLogSpy = jest.spyOn((service as any).logger, 'log');
+      
 
       const result = await service.calculateFinalPremium(mockPricing, { age: 25 });
 
@@ -131,8 +131,7 @@ describe('PricingCalculationService', () => {
         finalPremium: 1000,
       });
 
-      expect(loggerLogSpy).toHaveBeenCalledWith('Calculating final premium for pricing pricing-123');
-      expect(loggerLogSpy).toHaveBeenCalledWith('Final premium calculated: 1000 for pricing pricing-123');
+      
     });
 
     it('should calculate final premium without applicable rules', async () => {
@@ -147,14 +146,14 @@ describe('PricingCalculationService', () => {
       };
       const getApplicableRulesSpy = jest.spyOn(service as any, 'getApplicableRules')
         .mockResolvedValue([]);
-      const loggerLogSpy = jest.spyOn((service as any).logger, 'log');
+      
 
       const result = await service.calculateFinalPremium(freshPricing);
 
       expect(getApplicableRulesSpy).toHaveBeenCalledWith(freshPricing, {});
       expect(result.totalPremium).toBe(1000); // basePremium only (sem regras aplicadas)
       expect(result.pricingDetails.appliedRules).toEqual([]);
-      expect(loggerLogSpy).toHaveBeenCalledWith('Final premium calculated: 1000 for pricing pricing-123');
+      
     });
 
     it('should ensure minimum premium of 0', async () => {
